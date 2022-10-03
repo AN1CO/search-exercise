@@ -1,7 +1,3 @@
-const Header = () => (
-  <div>
-    Header
-  </div>
-);
+const Header = () => <h1>Search Crypto</h1>;
 
 export default Header;
