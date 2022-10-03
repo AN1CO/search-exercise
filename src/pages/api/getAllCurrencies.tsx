@@ -1,7 +1,7 @@
-import { ApiError } from 'next/dist/server/api-utils';
+import { AxiosError, AxiosResponse } from 'axios';
 const axios = require('axios').default;
 
-interface CurrencyPairItem {
+export interface CurrencyPairItemProps {
 	id: string;
 	base_currency: string;
 	quote_currency: string;
@@ -18,22 +18,20 @@ interface CurrencyPairItem {
 	auction_mode: boolean;
 }
 
-export const getAllCurrencies = () => {
+export const getAllCurrencies: any = () => {
 	axios
 		.get('https://api.exchange.coinbase.com/products')
-		.then((response: any) => {
-			// handle success
-			const onlineCurrencies: CurrencyPairItem[] = [];
-			response.data.map((currency: CurrencyPairItem) => {
+		.then((response: AxiosResponse) => {
+			const onlineCurrencies: CurrencyPairItemProps[] = [];
+			response.data.map((currency: CurrencyPairItemProps) => {
 				if (currency.status === 'online') {
 					onlineCurrencies.push(currency);
 				}
 				return onlineCurrencies;
 			});
+			return onlineCurrencies;
 		})
-		.catch((error: Promise<ApiError>) => {
-			// handle error
-			console.log(error);
+		.catch((error: AxiosError) => {
 			return error;
 		});
 };
