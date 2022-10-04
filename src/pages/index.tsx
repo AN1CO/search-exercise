@@ -50,6 +50,7 @@ const Homepage = () => {
 			 * handle floats
 			 * search for specific parts of the data
 			 * pagination to help with lag while searching
+			 * put text for when theres no search results that match
 			 */}
 			<div className='mx-auto max-w-2xl'>
 				<div className='justify-center p-2 m-2'>
