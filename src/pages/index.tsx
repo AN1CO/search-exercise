@@ -16,13 +16,18 @@ const Homepage = () => {
 
 	const searchItems = (searchValue: string) => {
 		setSearchInput(searchValue);
-		const filteredCurrenciesData = allCurrenciesData.filter((item) => {
-			return Object.values(item)
-				.join('')
-				.toLowerCase()
-				.includes(searchInput.toLowerCase());
-		});
-		setFilteredDataSearchResults(filteredCurrenciesData);
+
+		if (searchInput !== '') {
+			const filteredCurrenciesData = allCurrenciesData.filter((item) => {
+				return Object.values(item)
+					.join('')
+					.toLowerCase()
+					.includes(searchInput.toLowerCase());
+			});
+			setFilteredDataSearchResults(filteredCurrenciesData);
+		} else {
+			setFilteredDataSearchResults(allCurrenciesData);
+		}
 	};
 
 	useEffect(() => {
@@ -37,26 +42,61 @@ const Homepage = () => {
 
 	return (
 		<div>
-			<Header />
-			<div className='flex justify-center'>
-				<input
-					className='p-1 border rounded border-gray-800 enabled:hover:border-gray-400 disabled:opacity-75'
-					type='text'
-					placeholder='Search'
-					onChange={(e) => {
-						searchItems(e.target.value);
-					}}
-				/>
+			{/* TODO:
+			 * create a separate card component with styling
+			 * add tooltips for explaining  info stuff
+			 * style for more responsive design
+			 * make more styling inside the cards to make it prettier
+			 * handle floats
+			 * search for specific parts of the data
+			 * pagination to help with lag while searching
+			 */}
+			<div className='mx-auto max-w-2xl'>
+				<div className='justify-center p-2 m-2'>
+					<Header />
+				</div>
+				<div className='justify-center p-2 m-2'>
+					<input
+						className='p-1 border rounded border-gray-800 enabled:hover:border-gray-400 disabled:opacity-75'
+						type='text'
+						placeholder='Search'
+						onChange={(e) => {
+							searchItems(e.target.value);
+						}}
+					/>
+				</div>
+				<div className='grid grid-cols-4 grid-flow-row gap-2'>
+					{allCurrenciesData.length > 0 ? (
+						searchInput.length > 1 ? (
+							filteredDataSearchResults.map((item, index) => (
+								<div
+									key={index}
+									className='min-h-80 m-4 p-4 rounded-md bg-gray-200'
+								>
+									<p>{item.base_currency}</p>
+									<p>{`(${item.quote_currency})`}</p>
+									<p>{`Minimum Order Price: (${item.base_increment})`}</p>
+									<p>{`Minimum for Market Order: ${item.min_market_funds}`}</p>
+								</div>
+							))
+						) : (
+							allCurrenciesData.map((item, index) => (
+								<div
+									key={index}
+									className='min-h-80 m-4 p-4 rounded-md bg-gray-200'
+								>
+									<p>{item.base_currency}</p>
+									<p>{`(${item.quote_currency})`}</p>
+									<p>{`Minimum Order Price: (${item.base_increment})`}</p>
+									<p>{`Minimum for Market Order: ${item.min_market_funds}`}</p>
+								</div>
+							))
+						)
+					) : (
+						<p>Getting crypto...</p>
+					)}
+				</div>
 			</div>
-			<ul>
-				{allCurrenciesData.length > 0 ? (
-					allCurrenciesData.map((item, index) => (
-						<li key={index}>{item.display_name}</li>
-					))
-				) : (
-					<p>Getting crypto...</p>
-				)}
-			</ul>
 		</div>
 	);
 };
