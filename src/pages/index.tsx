@@ -6,14 +6,30 @@ import {
 import { useState, useEffect } from 'react';
 
 const Homepage = () => {
-	const [allCurrencies, setallCurrencies] = useState<CurrencyPairItemProps[]>(
-		[]
-	);
+	const [allCurrenciesData, setallCurrenciesData] = useState<
+		CurrencyPairItemProps[]
+	>([]);
+	const [filteredDataSearchResults, setFilteredDataSearchResults] = useState<
+		CurrencyPairItemProps[]
+	>([]);
+	const [searchInput, setSearchInput] = useState('');
+
+	const searchItems = (searchValue: string) => {
+		setSearchInput(searchValue);
+		const filteredCurrenciesData = allCurrenciesData.filter((item) => {
+			return Object.values(item)
+				.join('')
+				.toLowerCase()
+				.includes(searchInput.toLowerCase());
+		});
+		setFilteredDataSearchResults(filteredCurrenciesData);
+	};
+
 	useEffect(() => {
 		fetchAllCurrencies().then((res) => {
 			res.map((item: any) => {
 				if (item.status === 'online') {
-					setallCurrencies((prev) => [...prev, item]);
+					setallCurrenciesData((prev) => [...prev, item]);
 				}
 			});
 		});
@@ -26,17 +42,21 @@ const Homepage = () => {
 				<input
 					className='p-1 border rounded border-gray-800 enabled:hover:border-gray-400 disabled:opacity-75'
 					type='text'
+					placeholder='Search'
+					onChange={(e) => {
+						searchItems(e.target.value);
+					}}
 				/>
 			</div>
-			{allCurrencies.length > 0 ? (
-				allCurrencies.map((item) => (
-					<ul>
-						<li>{item.display_name}</li>
-					</ul>
-				))
-			) : (
-				<p>Getting crypto...</p>
-			)}
+			<ul>
+				{allCurrenciesData.length > 0 ? (
+					allCurrenciesData.map((item, index) => (
+						<li key={index}>{item.display_name}</li>
+					))
+				) : (
+					<p>Getting crypto...</p>
+				)}
+			</ul>
 		</div>
 	);
 };
