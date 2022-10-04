@@ -18,20 +18,11 @@ export interface CurrencyPairItemProps {
 	auction_mode: boolean;
 }
 
-export const getAllCurrencies: any = () => {
-	axios
-		.get('https://api.exchange.coinbase.com/products')
-		.then((response: AxiosResponse) => {
-			const onlineCurrencies: CurrencyPairItemProps[] = [];
-			response.data.map((currency: CurrencyPairItemProps) => {
-				if (currency.status === 'online') {
-					onlineCurrencies.push(currency);
-				}
-				return onlineCurrencies;
-			});
-			return onlineCurrencies;
-		})
-		.catch((error: AxiosError) => {
-			return error;
-		});
+export const fetchAllCurrencies = async () => {
+	try {
+		const res = await axios.get('https://api.exchange.coinbase.com/products');
+		return res.data;
+	} catch (err: any) {
+		throw err.response.data;
+	}
 };
